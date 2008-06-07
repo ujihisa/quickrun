@@ -35,6 +35,7 @@ ftplugin_path = File.expand_path '~/.vim/ftplugin'
   %w[scala],
   %w[perl],
   %w[php],
+  %w[io],
 ].each do |(language, interpreter)|
   interpreter ||= language
   unless FileTest.exist? "#{ftplugin_path}/#{language}"
