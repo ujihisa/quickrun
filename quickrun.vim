@@ -2,13 +2,21 @@ if !exists('b:did_quickrun')
   let b:did_quickrun = 1
 
   fu! QuickRun(command)
-    let codes = getline(1, line("$"))
-    let tmpfile = "/tmp/quickrun-vim-tmpfile." . expand('%:e')
+    if filereadable(expand('%'))
+      let s:file = expand('%')
+      exe 'bo sp [' . a:command . ']'
+      redr
+      call append(0, split(system(a:command . ' ' . s:file), '\n'))
+    el
+      let codes = getline(1, line("$"))
+      let tmpfile = "/tmp/quickrun-vim-tmpfile." . expand('%:e')
 
-    exe 'bo sp [' . a:command . ']'
-    call writefile(codes, tmpfile)
-    call append(0, split(system(a:command . ' ' . tmpfile), '\n'))
-    call system('rm ' . tmpfile)
+      exe 'bo sp [' . a:command . ']'
+      redr
+      call writefile(codes, tmpfile)
+      call append(0, split(system(a:command . ' ' . tmpfile), '\n'))
+      call system('rm ' . tmpfile)
+    en
 
     setlocal nomodifiable
     setlocal nobuflisted
