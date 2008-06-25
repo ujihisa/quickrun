@@ -4,14 +4,14 @@ if !exists('b:did_quickrun')
   fu! QuickRun(command)
     if filereadable(expand('%'))
       let s:file = expand('%')
-      exe 'bo sp [' . a:command . ']'
+      exe 'rightbelow vsp [' . a:command . ']'
       redr
       call append(0, split(system(a:command . ' ' . s:file), '\n'))
     el
       let codes = getline(1, line("$"))
       let tmpfile = "/tmp/quickrun-vim-tmpfile." . expand('%:e')
 
-      exe 'bo sp [' . a:command . ']'
+      exe 'rightbelow vsp [' . a:command . ']'
       redr
       call writefile(codes, tmpfile)
       call append(0, split(system(a:command . ' ' . tmpfile), '\n'))
