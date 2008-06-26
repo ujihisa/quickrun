@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 class Install
   @@force_save = ARGV.include? '-f'
 
