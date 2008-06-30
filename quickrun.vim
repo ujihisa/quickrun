@@ -32,8 +32,8 @@ endif
 
 au Filetype ruby        nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
 au Filetype haskell     nnoremap <buffer><leader>r :call QuickRun('runghc')<Return>
-au Filetype python      nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
-au Filetype javascript  nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
+au Filetype python      nnoremap <buffer><leader>r :call QuickRun('python')<Return>
+au Filetype javascript  nnoremap <buffer><leader>r :call QuickRun('js')<Return>
 au Filetype scheme      nnoremap <buffer><leader>r :call QuickRun('gosh')<Return>
 au Filetype sh          nnoremap <buffer><leader>r :call QuickRun('sh')<Return>
 au Filetype awk         nnoremap <buffer><leader>r :call QuickRun('awk')<Return>
