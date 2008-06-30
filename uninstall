@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+Dir.glob(File.expand_path('~/.vim/ftplugin/**/quickrun.vim')).each do |f|
+  puts f
+  File.unlink f
+end

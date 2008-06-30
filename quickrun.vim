@@ -30,4 +30,18 @@ if !exists('b:did_quickrun')
   endfunc
 endif
 
+au Filetype ruby        nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
+au Filetype haskell     nnoremap <buffer><leader>r :call QuickRun('runghc')<Return>
+au Filetype python      nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
+au Filetype javascript  nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
+au Filetype scheme      nnoremap <buffer><leader>r :call QuickRun('gosh')<Return>
+au Filetype sh          nnoremap <buffer><leader>r :call QuickRun('sh')<Return>
+au Filetype awk         nnoremap <buffer><leader>r :call QuickRun('awk')<Return>
+au Filetype sed         nnoremap <buffer><leader>r :call QuickRun('sed')<Return>
+au Filetype scala       nnoremap <buffer><leader>r :call QuickRun('scala')<Return>
+au Filetype perl        nnoremap <buffer><leader>r :call QuickRun('perl')<Return>
+au Filetype php         nnoremap <buffer><leader>r :call QuickRun('php')<Return>
+au Filetype io          nnoremap <buffer><leader>r :call QuickRun('io')<Return>
+au Filetype c           nnoremap <buffer><leader>r :call QuickRun('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')<Return>
+
 " __END__
