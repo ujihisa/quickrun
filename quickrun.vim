@@ -3,6 +3,7 @@ if !exists('b:did_quickrun')
 
   fu! QuickRun(command)
     if filereadable(expand('%'))
+      w
       let s:file = expand('%')
       exe 'rightbelow vsp [' . a:command . ']'
       redr
