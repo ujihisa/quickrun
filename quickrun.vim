@@ -14,23 +14,25 @@ function! s:quickrun()
     echoerr 'quickrun is not available for filetype:' string(&l:filetype)
     return
   endif
+  let quickrun_command = b:quickrun_command
 
-  if filereadable(expand('%'))
+  let existent_file_p = filereadable(expand('%'))
+  if existent_file_p
     silent update
     let file = expand('%')
   else
     let file = tempname() . expand('%:e')
     execute 'write' file
-  endfor
+  endif
 
-  call s:open_result_buffer()
+  call s:open_result_buffer(quickrun_command)
   setlocal modifiable
     silent % delete _
-    execute 'read !' b:quickrun_command file
+    execute 'read !' quickrun_command file
     silent 1 delete _
   setlocal nomodifiable
 
-  if filereadable(expand('%'))
+  if existent_file_p
     " nop.
   else
     call delete(file)
@@ -38,13 +40,11 @@ function! s:quickrun()
 endfunc
 
 
-function! s:open_result_buffer()
-  let bufname = printf('[%s]', b:quickrun_command)
-  let bufnr = bufnr(bufname)  " FIXME: escape bufname.
+function! s:open_result_buffer(quickrun_command)
+  let bufname = printf('*quickrun* %s', a:quickrun_command)
 
-  execute g:quickrun_direction 'split'
-  if bufnr == -1
-    enew
+  if !bufexists(bufname)
+    execute g:quickrun_direction 'new'
     setlocal bufhidden=unload
     setlocal nobuflisted
     setlocal buftype=nofile
@@ -55,7 +55,14 @@ function! s:open_result_buffer()
 
     nnoremap <buffer> <silent> q  <C-w>c
   else
-    silent execute bufnr 'buffer'
+    let bufnr = bufnr(bufname)  " FIXME: escape.
+    let winnr = bufwinnr(bufnr)
+    if winnr == -1
+      execute g:quickrun_direction 'split'
+      execute bufnr 'buffer'
+    else
+      execute winnr 'wincmd w'
+    endif
   endif
 endfunction
 
@@ -78,7 +85,7 @@ endif
 
 
 
-nnoremap <Plug>(quickrun)  :<<C-u>call s:quickrun()<Return>
+nnoremap <Plug>(quickrun)  :<C-u>call <SID>quickrun()<Return>
 silent! nmap <unique> <Leader>r  <Plug>(quickrun)
 
 augroup plugin-quickrun
