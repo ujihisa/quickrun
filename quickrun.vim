@@ -1,3 +1,7 @@
+" quickrun - run a command and show its result quickly
+" Author: ujihisa <http://ujihisa.nowa.jp/>
+" ModifiedBy: kana <http://whileimautomaton.net/>
+
 if !exists('b:did_quickrun')
   let b:did_quickrun = 1
 
