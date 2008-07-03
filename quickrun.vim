@@ -17,10 +17,9 @@ function! s:quickrun()
 
   if filereadable(expand('%'))
     write
-    let s:file = expand('%')
     execute 'rightbelow vsp [' . b:quickrun_command . ']'
     redraw
-    call append(0, split(system(b:quickrun_command . ' ' . s:file), '\n'))
+    call append(0, split(system(b:quickrun_command . ' ' . expand('%')), '\n'))
   else
     let codes = getline(1, line("$"))
     let tmpfile = "/tmp/quickrun-vim-tmpfile." . expand('%:e')
