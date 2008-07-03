@@ -9,23 +9,23 @@ endif
 
 
 
-fu! QuickRun(command)
+function! QuickRun(command)
   if filereadable(expand('%'))
-    w
+    write
     let s:file = expand('%')
-    exe 'rightbelow vsp [' . a:command . ']'
-    redr
+    execute 'rightbelow vsp [' . a:command . ']'
+    redraw
     call append(0, split(system(a:command . ' ' . s:file), '\n'))
-  el
+  else
     let codes = getline(1, line("$"))
     let tmpfile = "/tmp/quickrun-vim-tmpfile." . expand('%:e')
 
-    exe 'rightbelow vsp [' . a:command . ']'
-    redr
+    execute 'rightbelow vsp [' . a:command . ']'
+    redraw
     call writefile(codes, tmpfile)
     call append(0, split(system(a:command . ' ' . tmpfile), '\n'))
     call system('rm ' . tmpfile)
-  en
+  endfor
 
   setlocal nomodifiable
   setlocal nobuflisted
@@ -38,19 +38,19 @@ fu! QuickRun(command)
   noremap <buffer> <silent> q :close<cr>
 endfunc
 
-au Filetype ruby        nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
-au Filetype haskell     nnoremap <buffer><leader>r :call QuickRun('runghc')<Return>
-au Filetype python      nnoremap <buffer><leader>r :call QuickRun('python')<Return>
-au Filetype javascript  nnoremap <buffer><leader>r :call QuickRun('js')<Return>
-au Filetype scheme      nnoremap <buffer><leader>r :call QuickRun('gosh')<Return>
-au Filetype sh          nnoremap <buffer><leader>r :call QuickRun('sh')<Return>
-au Filetype awk         nnoremap <buffer><leader>r :call QuickRun('awk')<Return>
-au Filetype sed         nnoremap <buffer><leader>r :call QuickRun('sed')<Return>
-au Filetype scala       nnoremap <buffer><leader>r :call QuickRun('scala')<Return>
-au Filetype perl        nnoremap <buffer><leader>r :call QuickRun('perl')<Return>
-au Filetype php         nnoremap <buffer><leader>r :call QuickRun('php')<Return>
-au Filetype io          nnoremap <buffer><leader>r :call QuickRun('io')<Return>
-au Filetype c           nnoremap <buffer><leader>r :call QuickRun('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')<Return>
+autocmd Filetype ruby        nnoremap <buffer><leader>r :call QuickRun('ruby')<Return>
+autocmd Filetype haskell     nnoremap <buffer><leader>r :call QuickRun('runghc')<Return>
+autocmd Filetype python      nnoremap <buffer><leader>r :call QuickRun('python')<Return>
+autocmd Filetype javascript  nnoremap <buffer><leader>r :call QuickRun('js')<Return>
+autocmd Filetype scheme      nnoremap <buffer><leader>r :call QuickRun('gosh')<Return>
+autocmd Filetype sh          nnoremap <buffer><leader>r :call QuickRun('sh')<Return>
+autocmd Filetype awk         nnoremap <buffer><leader>r :call QuickRun('awk')<Return>
+autocmd Filetype sed         nnoremap <buffer><leader>r :call QuickRun('sed')<Return>
+autocmd Filetype scala       nnoremap <buffer><leader>r :call QuickRun('scala')<Return>
+autocmd Filetype perl        nnoremap <buffer><leader>r :call QuickRun('perl')<Return>
+autocmd Filetype php         nnoremap <buffer><leader>r :call QuickRun('php')<Return>
+autocmd Filetype io          nnoremap <buffer><leader>r :call QuickRun('io')<Return>
+autocmd Filetype c           nnoremap <buffer><leader>r :call QuickRun('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')<Return>
 
 
 
