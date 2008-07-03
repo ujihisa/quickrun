@@ -60,6 +60,15 @@ function! s:open_result_buffer()
 endfunction
 
 
+function! s:set_quickrun_command(command)
+  " Use user's settings if they exist.
+  if !exists('b:quickrun_command')
+    let b:quickrun_command = a:command
+  endif
+endfunction
+
+
+
 
 
 if !exists('g:quickrun_direction')
@@ -74,19 +83,19 @@ silent! nmap <unique> <Leader>r  <Plug>(quickrun)
 
 augroup plugin-quickrun
   autocmd!
-  autocmd Filetype awk  let b:quickrun_command = 'awk'
-  autocmd Filetype c  let b:quickrun_command = 'function __rungcc__() { gcc $1 && ./a.out } && __rungcc__'
-  autocmd Filetype haskell  let b:quickrun_command = 'runghc'
-  autocmd Filetype io  let b:quickrun_command = 'io'
-  autocmd Filetype javascript  let b:quickrun_command = 'js'
-  autocmd Filetype perl  let b:quickrun_command = 'perl'
-  autocmd Filetype php  let b:quickrun_command = 'php'
-  autocmd Filetype python  let b:quickrun_command = 'python'
-  autocmd Filetype ruby  let b:quickrun_command = 'ruby'
-  autocmd Filetype scala  let b:quickrun_command = 'scala'
-  autocmd Filetype scheme  let b:quickrun_command = 'gosh'
-  autocmd Filetype sed  let b:quickrun_command = 'sed'
-  autocmd Filetype sh  let b:quickrun_command = 'sh'
+  autocmd Filetype awk  call s:set_quickrun_command('awk')
+  autocmd Filetype c  call s:set_quickrun_command('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')
+  autocmd Filetype haskell  call s:set_quickrun_command('runghc')
+  autocmd Filetype io  call s:set_quickrun_command('io')
+  autocmd Filetype javascript  call s:set_quickrun_command('js')
+  autocmd Filetype perl  call s:set_quickrun_command('perl')
+  autocmd Filetype php  call s:set_quickrun_command('php')
+  autocmd Filetype python  call s:set_quickrun_command('python')
+  autocmd Filetype ruby  call s:set_quickrun_command('ruby')
+  autocmd Filetype scala  call s:set_quickrun_command('scala')
+  autocmd Filetype scheme  call s:set_quickrun_command('gosh')
+  autocmd Filetype sed  call s:set_quickrun_command('sed')
+  autocmd Filetype sh  call s:set_quickrun_command('sh')
 augroup END
 
 
