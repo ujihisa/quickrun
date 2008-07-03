@@ -16,31 +16,55 @@ function! s:quickrun()
   endif
 
   if filereadable(expand('%'))
-    write
-    execute 'rightbelow vsp [' . b:quickrun_command . ']'
-    redraw
-    call append(0, split(system(b:quickrun_command . ' ' . expand('%')), '\n'))
+    silent update
+    let file = expand('%')
   else
-    let codes = getline(1, line("$"))
-    let tmpfile = "/tmp/quickrun-vim-tmpfile." . expand('%:e')
-
-    execute 'rightbelow vsp [' . b:quickrun_command . ']'
-    redraw
-    call writefile(codes, tmpfile)
-    call append(0, split(system(b:quickrun_command . ' ' . tmpfile), '\n'))
-    call system('rm ' . tmpfile)
+    let file = tempname() . expand('%:e')
+    execute 'write' file
   endfor
 
+  call s:open_result_buffer()
+  setlocal modifiable
+    silent % delete _
+    execute 'read !' b:quickrun_command file
+    silent 1 delete _
   setlocal nomodifiable
-  setlocal nobuflisted
-  setlocal nonumber
-  setlocal noswapfile
-  setlocal buftype=nofile
-  setlocal bufhidden=delete
-  setlocal noshowcmd
-  setlocal wrap
-  noremap <buffer> <silent> q :close<cr>
+
+  if filereadable(expand('%'))
+    " nop.
+  else
+    call delete(file)
+  endif
 endfunc
+
+
+function! s:open_result_buffer()
+  let bufname = printf('[%s]', b:quickrun_command)
+  let bufnr = bufnr(bufname)  " FIXME: escape bufname.
+
+  execute g:quickrun_direction 'split'
+  if bufnr == -1
+    enew
+    setlocal bufhidden=unload
+    setlocal nobuflisted
+    setlocal buftype=nofile
+    setlocal nomodifiable
+    setlocal noswapfile
+    setfiletype quickrun
+    silent file `=bufname`
+
+    nnoremap <buffer> <silent> q  <C-w>c
+  else
+    silent execute bufnr 'buffer'
+  endif
+endfunction
+
+
+
+
+if !exists('g:quickrun_direction')
+  let g:quickrun_direction = 'rightbelow'
+endif
 
 
 
