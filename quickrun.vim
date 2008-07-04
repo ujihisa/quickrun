@@ -93,7 +93,7 @@ endif
 
 
 
-nnoremap <Plug>(quickrun)  :<C-u>call <SID>quickrun()<Return>
+nnoremap <silent> <Plug>(quickrun)  :<C-u>call <SID>quickrun()<Return>
 silent! nmap <unique> <Leader>r  <Plug>(quickrun)
 
 augroup plugin-quickrun
