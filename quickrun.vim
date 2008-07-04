@@ -23,12 +23,14 @@ function! s:quickrun()
   else
     let file = tempname() . expand('%:e')
     let original_bufname = bufname('')
-    silent keepalt write `=file`
-    if original_bufname == ''
-      " Reset the side effect of ":write {file}" - it sets {file} as the name
-      " of the current buffer if it is unnamed buffer.
-      silent 0 file
-    endif
+    let original_modified = &l:modified
+      silent keepalt write `=file`
+      if original_bufname == ''
+        " Reset the side effect of ":write {file}" - it sets {file} as the
+        " name of the current buffer if it is unnamed buffer.
+        silent 0 file
+      endif
+    let &l:modified = original_modified
   endif
 
   call s:open_result_buffer(quickrun_command)
