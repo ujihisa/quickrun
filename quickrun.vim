@@ -23,7 +23,7 @@ function! s:quickrun()
   else
     let file = tempname() . expand('%:e')
     let original_bufname = bufname('')
-    silent write `=file`
+    silent keepalt write `=file`
     if original_bufname == ''
       " Reset the side effect of ":write {file}" - it sets {file} as the name
       " of the current buffer if it is unnamed buffer.
