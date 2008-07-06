@@ -36,7 +36,7 @@ function! s:quickrun()
   call s:open_result_buffer(quickrun_command)
   setlocal modifiable
     silent % delete _
-    execute 'read !' quickrun_command file
+    execute 'silent! read !' quickrun_command file
     silent 1 delete _
   setlocal nomodifiable
 
