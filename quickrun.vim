@@ -53,6 +53,9 @@ function! s:open_result_buffer(quickrun_command)
 
   if !bufexists(bufname)
     execute g:quickrun_direction 'new'
+    call append(0, ':-)')
+    redraw
+    call delete(0)
     setlocal bufhidden=unload
     setlocal nobuflisted
     setlocal buftype=nofile
