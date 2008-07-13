@@ -36,6 +36,9 @@ function! s:quickrun()
   call s:open_result_buffer(quickrun_command)
   setlocal modifiable
     silent % delete _
+    call append(0, ':-)')
+    redraw
+    call delete(0)
     execute 'silent! read !' quickrun_command file
     silent 1 delete _
   setlocal nomodifiable
@@ -53,9 +56,6 @@ function! s:open_result_buffer(quickrun_command)
 
   if !bufexists(bufname)
     execute g:quickrun_direction 'new'
-    call append(0, ':-)')
-    redraw
-    call delete(0)
     setlocal bufhidden=unload
     setlocal nobuflisted
     setlocal buftype=nofile
