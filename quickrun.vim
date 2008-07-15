@@ -39,6 +39,7 @@ function! s:quickrun()
     call append(0, ':-)')
     redraw
     silent % delete _
+    call append(0, '')
     execute 'silent! read !' quickrun_command file
     silent 1 delete _
   setlocal nomodifiable
