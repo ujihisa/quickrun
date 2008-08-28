@@ -104,6 +104,7 @@ augroup plugin-quickrun
   autocmd!
   autocmd Filetype awk  call s:set_quickrun_command('awk')
   autocmd Filetype c  call s:set_quickrun_command('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')
+  autocmd Filetype m  call s:set_quickrun_command('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')
   autocmd Filetype haskell  call s:set_quickrun_command('runghc')
   autocmd Filetype io  call s:set_quickrun_command('io')
   autocmd Filetype javascript  call s:set_quickrun_command('js')
