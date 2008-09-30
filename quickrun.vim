@@ -7,6 +7,24 @@ if exists('g:loaded_quickrun')
 endif
 
 
+function! s:quicklaunch(no)
+  if !exists('g:quicklaunch_commands[a:no]')
+    echoerr 'quicklaunch has no command'
+    return
+  endif
+  let quicklaunch_command = g:quicklaunch_commands[a:no][1]
+  let file                = g:quicklaunch_commands[a:no][0]
+  call s:open_result_buffer(quicklaunch_command)
+  setlocal modifiable
+    silent % delete _
+    call append(0, ':-<')
+    redraw
+    silent % delete _
+    call append(0, '')
+    execute 'silent! read !' quicklaunch_command file
+    silent 1 delete _
+  setlocal nomodifiable
+endfunction
 
 
 function! s:quickrun()
@@ -99,6 +117,7 @@ endif
 
 nnoremap <silent> <Plug>(quickrun)  :<C-u>call <SID>quickrun()<Return>
 silent! nmap <unique> <Leader>r  <Plug>(quickrun)
+command! -nargs=1 QuickLaunch :call s:quicklaunch(<q-args>)
 
 augroup plugin-quickrun
   autocmd!
