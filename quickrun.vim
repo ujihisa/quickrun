@@ -8,12 +8,12 @@ endif
 
 
 function! s:quicklaunch(no)
-  if !exists('g:quicklaunch_commands[a:no]')
-    echoerr 'quicklaunch has no command'
+  if !exists('g:quicklaunch_commands[a:no - 1]')
+    echoerr 'quicklaunch has no such command:' a:no
     return
   endif
-  let quicklaunch_command = g:quicklaunch_commands[a:no][1]
-  let file                = g:quicklaunch_commands[a:no][0]
+  let quicklaunch_command = g:quicklaunch_commands[a:no - 1][1]
+  let file                = g:quicklaunch_commands[a:no - 1][0]
   call s:open_result_buffer(quicklaunch_command)
   setlocal modifiable
     silent % delete _
