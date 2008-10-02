@@ -1,6 +1,7 @@
 " quickrun - run a command and show its result quickly
 " Author: ujihisa <http://ujihisa.nowa.jp/>
 " ModifiedBy: kana <http://whileimautomaton.net/>
+" ModifiedBy: Sixeight <http://d.hatena.ne.jp/Sixeight/>
 
 if exists('g:loaded_quickrun')
   finish
@@ -8,12 +9,11 @@ endif
 
 
 function! s:quicklaunch(no)
-  if !exists('g:quicklaunch_commands[a:no - 1]')
+  if !exists('g:quicklaunch_commands[a:no]')
     echoerr 'quicklaunch has no such command:' a:no
     return
   endif
-  let quicklaunch_command = g:quicklaunch_commands[a:no - 1][1]
-  let file                = g:quicklaunch_commands[a:no - 1][0]
+  let quicklaunch_command = g:quicklaunch_commands[a:no]
   call s:open_result_buffer(quicklaunch_command)
   setlocal modifiable
     silent % delete _
@@ -21,7 +21,7 @@ function! s:quicklaunch(no)
     redraw
     silent % delete _
     call append(0, '')
-    execute 'silent! read !' quicklaunch_command file
+    execute 'silent! read !' quicklaunch_command
     silent 1 delete _
   setlocal nomodifiable
 endfunction
@@ -117,7 +117,10 @@ endif
 
 nnoremap <silent> <Plug>(quickrun)  :<C-u>call <SID>quickrun()<Return>
 silent! nmap <unique> <Leader>r  <Plug>(quickrun)
-command! -nargs=1 QuickLaunch :call s:quicklaunch(<q-args>)
+for i in range(10)
+  execute "nnoremap <silent> <Plug>(quicklaunch-" . i . ") :<C-u>call <SID>quicklaunch(" . i . ")<Return>"
+  execute "silent! nmap <unique> <Leader>" . i . "  <Plug>(quicklaunch-" . i . ")"
+endfor
 
 augroup plugin-quickrun
   autocmd!
