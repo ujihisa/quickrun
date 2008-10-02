@@ -116,10 +116,10 @@ endif
 
 
 nnoremap <silent> <Plug>(quickrun)  :<C-u>call <SID>quickrun()<Return>
-silent! nmap <unique> <Space>r  <Plug>(quickrun)
+silent! nmap <unique> <Leader>r  <Plug>(quickrun)
 for i in range(10)
   execute "nnoremap <silent> <Plug>(quicklaunch-" . i . ") :<C-u>call <SID>quicklaunch(" . i . ")<Return>"
-  execute "silent! nmap <unique> <Space>" . i . "  <Plug>(quicklaunch-" . i . ")"
+  execute "silent! nmap <unique> <Leader>" . i . "  <Plug>(quicklaunch-" . i . ")"
 endfor
 
 augroup plugin-quickrun
