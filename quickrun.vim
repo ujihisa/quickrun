@@ -71,7 +71,7 @@ endfunc
 
 
 function! s:open_result_buffer(quickrun_command)
-  let bufname = printf('*quickrun* %s', a:quickrun_command)
+  let bufname = printf('[quickrun] %s', a:quickrun_command)
 
   if !bufexists(bufname)
     execute g:quickrun_direction 'new'
