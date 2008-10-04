@@ -26,6 +26,21 @@ function! s:quicklaunch(no)
   setlocal nomodifiable
 endfunction
 
+function! s:quicklaunch_list()
+  if !exists('g:quicklaunch_commands')
+    echo 'no command registered'
+    return
+  else
+    for i in range(10)
+      if exists('g:quicklaunch_commands[i]')
+        echo i . ' : ' . g:quicklaunch_commands[i]
+      else
+        echo i . ' : Nop'
+      endif
+    endfor
+  endif
+endfunction
+
 
 function! s:quickrun()
   if !exists('b:quickrun_command')
@@ -121,6 +136,8 @@ for i in range(10)
   execute "nnoremap <silent> <Plug>(quicklaunch-" . i . ") :<C-u>call <SID>quicklaunch(" . i . ")<Return>"
   execute "silent! nmap <unique> <Leader>" . i . "  <Plug>(quicklaunch-" . i . ")"
 endfor
+nnoremap <silent> <Plug>(quicklaunch-list)  :<C-u>call <SID>quicklaunch_list()<Return>
+silent! nmap <unique> <Leader>l  <Plug>(quicklaunch-list)
 
 augroup plugin-quickrun
   autocmd!
