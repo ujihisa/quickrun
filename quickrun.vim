@@ -30,15 +30,20 @@ function! s:quicklaunch_list()
   if !exists('g:quicklaunch_commands')
     echo 'no command registered'
     return
-  else
+  endif
+  call s:open_result_buffer('quicklaunch_list')
+  setlocal modifiable
+    silent % delete _
+    call append(0, '')
     for i in range(10)
       if exists('g:quicklaunch_commands[i]')
-        echo i . ' : ' . g:quicklaunch_commands[i]
+        call append(line('$'), i . ': ' . g:quicklaunch_commands[i])
       else
-        echo i . ' : Nop'
+        call append(line('$'), i . ': <Nop>')
       endif
     endfor
-  endif
+    silent 1 delete _
+  setlocal nomodifiable
 endfunction
 
 
