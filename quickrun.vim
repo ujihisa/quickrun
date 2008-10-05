@@ -43,8 +43,9 @@ endfunction
 
 function! s:quickkeywordprg()
   let keyword = expand('<cword>')
+  let keywordprg = &keywordprg
   call s:open_result_buffer(keyword)
-  call s:write_result_buffer(':-D', 'silent! read ! ' . &keywordprg . ' ' . keyword)
+  call s:write_result_buffer(':-D', 'silent! read ! ' . keywordprg . ' ' . keyword)
 endfunction
 
 
