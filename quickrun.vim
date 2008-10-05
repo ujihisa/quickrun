@@ -15,15 +15,7 @@ function! s:quicklaunch(no)
   endif
   let quicklaunch_command = g:quicklaunch_commands[a:no]
   call s:open_result_buffer(quicklaunch_command)
-  setlocal modifiable
-    silent % delete _
-    call append(0, ':-<')
-    redraw
-    silent % delete _
-    call append(0, '')
-    execute 'silent! read !' quicklaunch_command
-    silent 1 delete _
-  setlocal nomodifiable
+  call s:write_result_buffer(':-<', 'silent! read !' . quicklaunch_command)
 endfunction
 
 function! s:quicklaunch_list()
@@ -32,6 +24,7 @@ function! s:quicklaunch_list()
     return
   endif
   call s:open_result_buffer('quicklaunch_list')
+  " FIXME: use s:write_result_buffer
   setlocal modifiable
     silent % delete _
     call append(0, '')
@@ -72,15 +65,7 @@ function! s:quickrun()
   endif
 
   call s:open_result_buffer(quickrun_command)
-  setlocal modifiable
-    silent % delete _
-    call append(0, ':-)')
-    redraw
-    silent % delete _
-    call append(0, '')
-    execute 'silent! read !' quickrun_command file
-    silent 1 delete _
-  setlocal nomodifiable
+  call s:write_result_buffer(':-)', 'silent! read !' . quickrun_command . ' ' . file)
 
   if existent_file_p
     " nop.
@@ -114,6 +99,19 @@ function! s:open_result_buffer(quickrun_command)
       execute winnr 'wincmd w'
     endif
   endif
+endfunction
+
+
+function! s:write_result_buffer(loading_message, command)
+  setlocal modifiable
+    silent % delete _
+    call append(0, a:loading_message)
+    redraw
+    silent % delete _
+    call append(0, '')
+    execute a:command
+    silent 1 delete _
+  setlocal nomodifiable
 endfunction
 
 
