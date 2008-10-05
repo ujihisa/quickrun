@@ -18,6 +18,7 @@ function! s:quicklaunch(no)
   call s:write_result_buffer(':-<', 'silent! read !' . quicklaunch_command)
 endfunction
 
+
 function! s:quicklaunch_list()
   if !exists('g:quicklaunch_commands')
     echo 'no command registered'
@@ -37,6 +38,13 @@ function! s:quicklaunch_list()
     endfor
     silent 1 delete _
   setlocal nomodifiable
+endfunction
+
+
+function! s:quickkeywordprg()
+  let keyword = expand('<cword>')
+  call s:open_result_buffer(keyword)
+  call s:write_result_buffer(':-D', 'silent! read ! ' . &keywordprg . ' ' . keyword)
 endfunction
 
 
@@ -141,6 +149,9 @@ for i in range(10)
 endfor
 nnoremap <silent> <Plug>(quicklaunch-list)  :<C-u>call <SID>quicklaunch_list()<Return>
 silent! nmap <unique> <Leader>l  <Plug>(quicklaunch-list)
+nnoremap <silent> <buffer> <Plug>(quickkeywordprg) :<C-u>call <SID>quickkeywordprg()<Cr>
+silent! nmap <unique> K  <Plug>(quickkeywordprg)
+
 
 augroup plugin-quickrun
   autocmd!
