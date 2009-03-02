@@ -54,7 +54,7 @@ function! s:quickrun()
     echoerr 'quickrun is not available for filetype:' string(&l:filetype)
     return
   endif
-  let quickrun_command = b:quickrun_command
+  let quickrun_command = s:get_quickrun_command()
 
   let existent_file_p = filereadable(expand('%'))
   if existent_file_p
@@ -82,6 +82,16 @@ function! s:quickrun()
     call delete(file)
   endif
 endfunc
+
+
+function! s:get_quickrun_command()
+  let m = matchlist(getline(1), '#!\(.*\)')
+  if(len(m) > 2)
+    return m[1]
+  else
+    return b:quickrun_command
+  endif
+endfunction
 
 
 function! s:open_result_buffer(quickrun_command)
