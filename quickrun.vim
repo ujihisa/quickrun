@@ -183,7 +183,7 @@ augroup plugin-quickrun
   autocmd Filetype sh  call s:set_quickrun_command('sh')
   autocmd Filetype gnuplot  call s:set_quickrun_command('gnuplot')
   autocmd Filetype eruby  call s:set_quickrun_command('erb -T -')
-  autocmd Filetype r  call s:set_quickrun_command('R')
+  autocmd Filetype r  call s:set_quickrun_command('R --no-save --slave <')
 augroup END
 
 
