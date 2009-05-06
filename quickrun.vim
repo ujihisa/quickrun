@@ -26,18 +26,16 @@ function! s:quicklaunch_list()
   endif
   call s:open_result_buffer('quicklaunch_list')
   " FIXME: use s:write_result_buffer
-  setlocal modifiable
-    silent % delete _
-    call append(0, '')
-    for i in range(10)
-      if exists('g:quicklaunch_commands[i]')
-        call append(line('$'), i . ': ' . g:quicklaunch_commands[i])
-      else
-        call append(line('$'), i . ': <Nop>')
-      endif
-    endfor
-    silent 1 delete _
-  setlocal nomodifiable
+  silent % delete _
+  call append(0, '')
+  for i in range(10)
+    if exists('g:quicklaunch_commands[i]')
+      call append(line('$'), i . ': ' . g:quicklaunch_commands[i])
+    else
+      call append(line('$'), i . ': <Nop>')
+    endif
+  endfor
+  silent 1 delete _
 endfunction
 
 
@@ -102,7 +100,6 @@ function! s:open_result_buffer(quickrun_command)
     setlocal bufhidden=unload
     setlocal nobuflisted
     setlocal buftype=nofile
-    setlocal nomodifiable
     setlocal noswapfile
     setfiletype quickrun
     silent file `=bufname`
@@ -122,15 +119,13 @@ endfunction
 
 
 function! s:write_result_buffer(loading_message, command)
-  setlocal modifiable
-    silent % delete _
-    call append(0, a:loading_message)
-    redraw
-    silent % delete _
-    call append(0, '')
-    execute a:command
-    silent 1 delete _
-  setlocal nomodifiable
+  silent % delete _
+  call append(0, a:loading_message)
+  redraw
+  silent % delete _
+  call append(0, '')
+  execute a:command
+  silent 1 delete _
 endfunction
 
 
