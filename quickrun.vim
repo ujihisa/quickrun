@@ -1,5 +1,5 @@
 " quickrun - run a command and show its result quickly
-" Author: ujihisa <http://ujihisa.nowa.jp/>
+" Author: ujihisa <http://ujihisa.blogspot.com/>
 " ModifiedBy: kana <http://whileimautomaton.net/>
 " ModifiedBy: Sixeight <http://d.hatena.ne.jp/Sixeight/>
 
