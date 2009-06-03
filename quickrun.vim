@@ -15,7 +15,11 @@ function! s:quicklaunch(no)
   endif
   let quicklaunch_command = g:quicklaunch_commands[a:no]
   call s:open_result_buffer(quicklaunch_command)
-  call s:write_result_buffer(':-<', 'silent! read !' . quicklaunch_command)
+  if g:VimShell_EnableInteractive && exists(':InteractiveRead')
+      call s:write_result_buffer(':-<', 'InteractiveRead ' . quicklaunch_command)
+  else
+      call s:write_result_buffer(':-<', 'silent! read !' . quicklaunch_command)
+  endif
 endfunction
 
 
@@ -43,7 +47,11 @@ function! s:quickkeywordprg()
   let keyword = expand('<cword>')
   let keywordprg = &keywordprg
   call s:open_result_buffer(keyword)
-  call s:write_result_buffer(':-D', 'silent! read ! ' . keywordprg . ' ' . keyword)
+  if g:VimShell_EnableInteractive && exists(':InteractiveRead')
+      call s:write_result_buffer(':-D', 'InteractiveRead ' . keywordprg . ' ' . keyword)
+  else
+      call s:write_result_buffer(':-D', 'silent! read ! ' . keywordprg . ' ' . keyword)
+  endif
 endfunction
 
 
@@ -72,7 +80,11 @@ function! s:quickrun()
   endif
 
   call s:open_result_buffer(quickrun_command)
-  call s:write_result_buffer(':-)', 'silent! read !' . quickrun_command . ' ' . file)
+  if g:VimShell_EnableInteractive && exists(':InteractiveRead')
+      call s:write_result_buffer(':-)', 'InteractiveRead ' . quickrun_command . ' ' . file)
+  else
+      call s:write_result_buffer(':-)', 'silent! read !' . quickrun_command . ' ' . file)
+  endif
 
   if existent_file_p
     " nop.
@@ -161,7 +173,7 @@ silent! nmap <unique> K  <Plug>(quickkeywordprg)
 
 augroup plugin-quickrun
   autocmd!
-  autocmd Filetype awk  call s:set_quickrun_command('awk')
+  autocmd Filetype awk  call s:set_quickrun_command('awk -f')
   autocmd Filetype c  call s:set_quickrun_command('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')
   autocmd Filetype cpp  call s:set_quickrun_command('function __rungpp__() { g++ $1 && ./a.out } && __rungpp__')
   autocmd Filetype eruby  call s:set_quickrun_command('erb -T -')
