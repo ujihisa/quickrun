@@ -15,7 +15,7 @@ function! s:quicklaunch(no)
   endif
   let quicklaunch_command = g:quicklaunch_commands[a:no]
   call s:open_result_buffer(quicklaunch_command)
-  if g:VimShell_EnableInteractive && exists(':InteractiveRead')
+  if exists('g:VimShell_EnableInteractive') && g:VimShell_EnableInteractive && exists(':InteractiveRead')
       call s:write_result_buffer(':-<', 'InteractiveRead ' . quicklaunch_command)
   else
       call s:write_result_buffer(':-<', 'silent! read !' . quicklaunch_command)
@@ -47,7 +47,7 @@ function! s:quickkeywordprg()
   let keyword = expand('<cword>')
   let keywordprg = &keywordprg
   call s:open_result_buffer(keyword)
-  if g:VimShell_EnableInteractive && exists(':InteractiveRead')
+  if exists('g:VimShell_EnableInteractive') && g:VimShell_EnableInteractive && exists(':InteractiveRead')
       call s:write_result_buffer(':-D', 'InteractiveRead ' . keywordprg . ' ' . keyword)
   else
       call s:write_result_buffer(':-D', 'silent! read ! ' . keywordprg . ' ' . keyword)
@@ -80,7 +80,7 @@ function! s:quickrun()
   endif
 
   call s:open_result_buffer(quickrun_command)
-  if g:VimShell_EnableInteractive && exists(':InteractiveRead')
+  if exists('g:VimShell_EnableInteractive') && g:VimShell_EnableInteractive && exists(':InteractiveRead')
       call s:write_result_buffer(':-)', 'InteractiveRead ' . quickrun_command . ' ' . file)
   else
       call s:write_result_buffer(':-)', 'silent! read !' . quickrun_command . ' ' . file)
