@@ -181,7 +181,8 @@ augroup plugin-quickrun
   autocmd Filetype haskell  call s:set_quickrun_command('runghc')
   autocmd Filetype io  call s:set_quickrun_command('io')
   autocmd Filetype javascript  call s:set_quickrun_command('js')
-  autocmd Filetype mkd  call s:set_quickrun_command('function __mkd__() { rpeg-markdown $1 > /tmp/__markdown.html; open /tmp/__markdown.html } && __mkd__')
+  autocmd Filetype mkd  call s:set_quickrun_command(
+  \ 'function __mkd__() { pandoc -f markdown -t html -o /tmp/__markdown.html $1; open /tmp/__markdown.html } && __mkd__')
   autocmd Filetype objc  call s:set_quickrun_command('function __rungcc__() { gcc $1 && ./a.out } && __rungcc__')
   autocmd Filetype perl  call s:set_quickrun_command('perl')
   autocmd Filetype php  call s:set_quickrun_command('php')
