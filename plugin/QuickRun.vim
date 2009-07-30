@@ -584,7 +584,9 @@ function! s:init()
         \   'command': 'R',
         \   'exec': '%c --no-save --slave %a < %s',
         \ },
-        \ 'ruby': {'eval': " p proc {\n%s\n}.call"},
+        \ 'ruby': {
+        \   'exec': '%c %s %a',
+        \ },
         \ 'scala': {},
         \ 'scheme': {
         \   'command': 'gosh',
