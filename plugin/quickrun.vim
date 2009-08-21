@@ -568,6 +568,11 @@ function! s:init()
         \   'tempfile': '{tempname()}.js',
         \ },
         \ 'lua': {},
+        \ 'mkd': {
+        \   'command': 'pandoc',
+        \   'exec': ['%c -f markdown -t html -o %s.html %s', 'open %s.html'],
+        \   'tempfile': '{tempname()}.md'
+        \ },
         \ 'dosbatch': {
         \   'command': '',
         \   'exec': 'call %s %a',
