@@ -30,8 +30,8 @@ License: クリエイティブ・コモンズの表示 2.1 日本ライセンス
 	" (vimrc にて) haskell を実行するプログラムのデフォルトを hugs にする
 	if !exists('g:QuickRunConfig')
 		let g:QuickRunConfig = {}
-		let g:QuickRunConfig.haskell = {'command' : 'runhugs'}
 	endif
+	let g:QuickRunConfig.haskell = {'command' : 'runhugs'}
 
 	" ショートカットキーを設定する
 	for [key, com] in items({
