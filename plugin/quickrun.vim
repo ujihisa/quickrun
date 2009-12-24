@@ -666,6 +666,11 @@ function! s:init()
         \              executable('cscript') ? 'cscript': '',
         \   'tempfile': '{tempname()}.js',
         \ },
+        \ 'llvm': {
+        \     'command': 'llvm-as',
+        \     'exec': ['%c %s -o %s:p:r.bc', 'lli %s:p:r.bc %a', 'rm -f %s:p:r.bc'],
+        \     'tempfile': '{tempname()}.ll',
+        \ },
         \ 'lua': {},
         \ 'mkd': {
         \   'command': 'pandoc',
