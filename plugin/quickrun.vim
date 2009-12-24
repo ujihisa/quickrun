@@ -668,7 +668,7 @@ function! s:init()
         \ },
         \ 'llvm': {
         \     'command': 'llvm-as',
-        \     'exec': ['%c %s -o %s:p:r.bc', 'lli %s:p:r.bc %a', 'rm -f %s:p:r.bc'],
+        \     'exec': ['%c %s -o - | lli - %a'],
         \     'tempfile': '{tempname()}.ll',
         \ },
         \ 'lua': {},
