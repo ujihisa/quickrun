@@ -672,7 +672,7 @@ function! s:init()
         \     'tempfile': '{tempname()}.ll',
         \ },
         \ 'lua': {},
-        \ 'mkd': {
+        \ 'markdown': {
         \   'command': 'pandoc',
         \   'exec': ['%c -f markdown -t html -o %s.html %s', 'open %s.html'],
         \   'tempfile': '{tempname()}.md'
