@@ -112,6 +112,7 @@ function! s:Runner.normalize()  " {{{2
   endif
 
   let config.type = get(config, 'type', &filetype)
+  echo config.type
 
   if has_key(g:quickrun_config, config.type)
     call extend(config, g:quickrun_config[config.type], 'keep')
@@ -531,7 +532,7 @@ function! s:quickrun(args)  " {{{2
       silent $-1 put =config.running_mark
       normal! zt
       wincmd p
-      redraw!
+      echo | redraw " better redraw!
     endif
 
     if has_key(config, 'debug') && config.debug
