@@ -743,9 +743,9 @@ command! -nargs=* -range=% -complete=customlist,s:quickrun_complete QuickRun
 
 
 command! -nargs=* -range=% QuickRunIt
-\ call s:quickrun('-start <line1> -end <line2> ' . b:quickrun_it . ' -mode <q-args>')
+\ call s:quickrun('-start <line1> -end <line2> ' . (exists('b:quickrun_it') ? b:quickrun_it : '') . ' -mode <q-args>')
 
-let b:quickrun_it = ''
+
 
 nnoremap <silent> <Plug>(quickrun-op) :<C-u>set operatorfunc=QuickRun<CR>g@
 
