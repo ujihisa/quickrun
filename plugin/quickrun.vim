@@ -1,4 +1,4 @@
-
+" Run commands quickly.
 " Version: 0.3.3
 " Author : thinca <thinca+vim@gmail.com>
 " License: Creative Commons Attribution 2.1 Japan License
