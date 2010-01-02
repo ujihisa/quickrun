@@ -1,4 +1,4 @@
-" Run commands quickly.
+
 " Version: 0.3.3
 " Author : thinca <thinca+vim@gmail.com>
 " License: Creative Commons Attribution 2.1 Japan License
@@ -31,6 +31,9 @@ endfunction
 function! s:Runner.initialize(argline)  " {{{2
   let arglist = self.parse_argline(a:argline)
   let self.config = self.set_options_from_arglist(arglist)
+  if has_key(self.config, 'type')
+    let b:quickrun_it = self.config.type
+  endif
   call self.normalize()
 endfunction
 
@@ -738,10 +741,16 @@ command! -nargs=* -range=% -complete=customlist,s:quickrun_complete QuickRun
 \ call s:quickrun('-start <line1> -end <line2> ' . <q-args>)
 
 
+
+command! -nargs=* -range=% QuickRunIt
+\ call s:quickrun('-start <line1> -end <line2> ' . b:quickrun_it . ' -mode <q-args>')
+
+let b:quickrun_it = ''
+
 nnoremap <silent> <Plug>(quickrun-op) :<C-u>set operatorfunc=QuickRun<CR>g@
 
-silent! nnoremap <silent> <Plug>(quickrun) :<C-u>QuickRun -mode n<CR>
-silent! vnoremap <silent> <Plug>(quickrun) :<C-u>QuickRun -mode v<CR>
+silent! nnoremap <silent> <Plug>(quickrun) :<C-u>QuickRunIt n<CR>
+silent! vnoremap <silent> <Plug>(quickrun) :<C-u>QuickRunIt v<CR>
 " Default key mappings.
 if !exists('g:quickrun_no_default_key_mappings')
 \  || !g:quickrun_no_default_key_mappings

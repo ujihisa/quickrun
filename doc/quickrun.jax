@@ -110,12 +110,19 @@ QuickRun({type})				*QuickRun()*
 <Plug>(quickrun-op)				*<Plug>(quickrun-op)*
 			続くモーションの範囲を実行します。これは
 			'operatorfunc' の値を "QuickRun" に変更します。
+			実行するコマンドについては|<Plug>(quickrun)|と同様です。
 
 <Plug>(quickrun)				*<Plug>(quickrun)*
 			現在のバッファに適したコマンドを実行して結果を別ウィン
 			ドウに表示します。
-			これは単純に |:QuickRun| コマンドを引数なしで実行する
-			のと同じです。
+			これは |:QuickRun| コマンドを実行するのとほとんど同様
+			ですが、引数はそのバッファで最後に実行した|:QuickRun|
+			と同じものになります。
+
+			:QuickRun
+			<Plug>(quickrun) "=> :QuickRun と同じ
+			:QuickRun ruby
+			<Plug>(quickrun) "=> :QuickRun ruby と同じ
 <
 
 					*g:quickrun_no_default_key_mappings*
@@ -341,6 +348,10 @@ TODO						*quickrun-TODO*
 ==============================================================================
 更新履歴					*quickrun-changelog*
 
+0.3.4	2010-02-03
+	- |<Plug>(quickrun)|はバッファで最後に実行した|:Quickrun|に
+	基づいて実行するよう仕様変更。
+
 0.3.3	2009-12-16
 	- マルチバイト文字を含むコマンドの実行がうまくいかないバグを修正。
 
@@ -404,4 +415,4 @@ TODO						*quickrun-TODO*
 
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet
