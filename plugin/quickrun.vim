@@ -32,7 +32,7 @@ function! s:Runner.initialize(argline)  " {{{2
   let arglist = self.parse_argline(a:argline)
   let self.config = self.set_options_from_arglist(arglist)
   if has_key(self.config, 'type')
-    let b:quickrun_it = self.config.type
+    let b:quickrun_it = "'" . self.config.type . "'"
   endif
   call self.normalize()
 endfunction
@@ -535,7 +535,8 @@ function! s:quickrun(args)  " {{{2
       silent $-1 put =config.running_mark
       normal! zt
       wincmd p
-      echo | redraw " better redraw!
+      redraw!
+      "echo | redraw " better redraw!
     endif
 
     if has_key(config, 'debug') && config.debug
