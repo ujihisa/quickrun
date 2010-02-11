@@ -26,6 +26,9 @@ TODO				|quickrun-TODO|
 *quickrun* は編集中のファイルの全体もしくは一部を実行する Vim プラグインです。
 実行するためのコマンド |:QuickRun| が提供されます。
 
+要件:
+- Vim 7.2 以降
+
 						*quickrun-synopsis*
 >
 	" 現在のバッファを実行
@@ -187,6 +190,24 @@ append					*quickrun-option-append*
 			0 以外が指定された場合、(可能ならば)出力先に対して追記
 			します。
 
+runmode					*quickrun-option-runmode*
+			実行モードを指定します。以下のうちのいずれかを指定しま
+			す。
+			- "simple"
+			  単純に |system()| や |:!|(output が ":" の場合) を
+			  使って実行します。デフォルトではこのモードです。
+			- "async:remote"
+			  {|+clientserver| が必要}
+			  コマンドをバックグラウンドで実行し、終了を
+			  |+clientserver| 機能を利用して通知し結果を表示します。
+			  バックグラウンドで実行するため、コマンドが無限ループ
+			  や入力待ち等で終了しない場合、Vim から制御することは
+			  できないので注意してください。
+			- "async:remote:vimproc"
+			  コマンドの実行に |vimproc| を使います。|vimproc| が
+			  インストールされていない場合は通常と同じように実行し
+			  ます。
+
 split (*)				*quickrun-option-split*
 			出力専用バッファを開く際の補助コマンドを指定します。バ
 			ッファを開く際に |:split| コマンドの前に挿入されます。
@@ -195,6 +216,10 @@ split (*)				*quickrun-option-split*
 			デフォルトは
 			'{winwidth(0) * 2 < winheight(0) * 5 ? "" : "vertical"}'
 			です。
+
+into					*quickrun-option-into*
+			0 以外を指定すると、結果が出た際に出力専用バッファへ
+			カーソルを移動します。
 
 mode					*quickrun-option-mode*
 			実行モードです。n,v,o のいずれかを指定します。これは範
@@ -280,6 +305,7 @@ exec オプションの書式				*quickrun-exec-format*
 	java %S:r:gs?[/\\]?.?
 <
 また、ファイルを指定するシンボルは |shellescape()| でエスケープされます。
+コマンドに改行文字が含まれている場合は空白文字に置き換えられます。
 
 Vim のコマンドを実行する
 ------------------------
@@ -299,8 +325,7 @@ exec を展開した結果先頭の文字が ":" だった場合、Vim のコマ
 設定					*quickrun-settings* *g:quickrun_config*
 
 グローバル変数 |g:quickrun_config| を使って各オプションのデフォルト値を設定で
-きます。|quickrun-options| に記載されているデフォルト値は実際にはこの変数のデ
-フォルト値です。
+きます。
 デフォルト値はオプション名をキーとした辞書で指定します。|g:quickrun_config| に
 は {type} をキー、デフォルト値を値にした辞書を指定します。つまり、この変数には
 二層構造の辞書を指定します。
@@ -315,6 +340,13 @@ exec を展開した結果先頭の文字が ":" だった場合、Vim のコマ
 す。その際に (.vimrc などで) すでに定義されていた場合は、デフォルト値に既存値
 を上書きする形で初期化されます。
 
+標準の設定					*g:quickrun_default_config*
+----------
+|g:quickrun_default_config| には標準的なデフォルトの設定が入っています。これ
+は |g:quickrun_config| と同じ構造になっています。
+|quickrun-options| に記載されているデフォルト値は実際にはこの変数のデフォルト
+値です。通常はユーザがこの値を操作する必要はありません。
+
 バッファローカルな設定				*b:quickrun_config*
 ----------------------
 |b:quickrun_config| を使ってバッファローカルな設定を追加できます。これには
@@ -327,7 +359,9 @@ exec を展開した結果先頭の文字が ":" だった場合、Vim のコマ
 1. コマンドラインで指定された値
 2. |b:quickrun_config|
 3. |g:quickrun_config| の {type}
-4. |g:quickrun_config| の '*'
+4. |g:quickrun_default_config| の {type}
+5. |g:quickrun_config| の '*'
+6. |g:quickrun_default_config| の '*'
 
 1 や 2 で {type} を設定しておくことで 3 で通常とは別の {type} を参照できます。
 
@@ -347,6 +381,15 @@ TODO						*quickrun-TODO*
 
 ==============================================================================
 更新履歴					*quickrun-changelog*
+
+0.4.0	2010-02-12
+	- |g:quickrun_default_config| を追加。
+	- デフォルトの設定に llvm を追加。
+	- コマンドに改行が含まれているとうまく実行できないバグを修正。
+	- 出力専用バッファをデフォルトで q で閉じるようにした。
+	- |quickrun-option-runmode| オプションを追加。
+	- |quickrun-option-into| オプションを追加。
+	- autoload 化。
 
 0.3.4	2010-02-03
 	- |<Plug>(quickrun)|はバッファで最後に実行した|:Quickrun|に
