@@ -1,6 +1,6 @@
 " Run commands quickly.
 " Version: 0.3.3
-" Author : thinca <thinca+vim@gmail.com>
+" Author : thinca <thinca+vim@gmail.com>, ujihisa <ujihisa at gmail com>
 " License: Creative Commons Attribution 2.1 Japan License
 "          <http://creativecommons.org/licenses/by/2.1/jp/deed.en>
 
@@ -679,7 +679,7 @@ function! s:init()
         \ 'lua': {},
         \ 'markdown': {
         \   'command': 'pandoc',
-        \   'exec': ['%c -f markdown -t html -o %s.html %s', 'open %s.html'],
+        \   'exec': ['%c -f markdown -t html -o %s:p:r.html %s', 'open %s:p:r.html', 'sleep 1', 'rm %s:p:r.html'],
         \   'tempfile': '{tempname()}.md'
         \ },
         \ 'dosbatch': {
