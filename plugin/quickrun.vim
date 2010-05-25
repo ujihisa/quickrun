@@ -1,6 +1,6 @@
 " Run commands quickly.
-" Version: 0.3.3
-" Author : thinca <thinca+vim@gmail.com>, ujihisa <ujihisa at gmail com>
+" Version: 0.4.1
+" Author : thinca <thinca+vim@gmail.com>
 " License: Creative Commons Attribution 2.1 Japan License
 "          <http://creativecommons.org/licenses/by/2.1/jp/deed.en>
 
@@ -101,7 +101,7 @@ function! s:init()
         \   'eval_template': 'main = print $ %s',
         \ },
         \ 'java': {
-        \   'exec': ['javac %s', '%c %s:t:r', ':call delete("%S:t:r.class")'],
+        \   'exec': ['javac %s', '%c %s:t:r %a', ':call delete("%S:t:r.class")'],
         \   'output_encode': '&tenc:&enc',
         \ },
         \ 'javascript': {
