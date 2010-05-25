@@ -1,5 +1,5 @@
 " Run commands quickly.
-" Version: 0.3.3
+" Version: 0.4.1
 " Author : thinca <thinca+vim@gmail.com>
 " License: Creative Commons Attribution 2.1 Japan License
 "          <http://creativecommons.org/licenses/by/2.1/jp/deed.en>
@@ -140,6 +140,10 @@ function! s:Runner.normalize()  " {{{2
   let config.start = get(config, 'start', 1)
   let config.end = get(config, 'end', line('$'))
 
+  if self.config.output == '!'
+    let config.runmode = 'simple'
+  endif
+
   if has_key(config, 'src')
     if config.eval
       let config.src = printf(config.eval_template, config.src)
@@ -178,11 +182,12 @@ endfunction
 
 
 " ----------------------------------------------------------------------------
-" Run commands. Return the stdout.
+" Run commands.
 function! s:Runner.run()  " {{{2
   let exec = get(self.config, 'exec', '')
   let commands = type(exec) == type([]) ? copy(exec) : [exec]
   call map(commands, 'self.build_command(v:val)')
+  call filter(commands, 'v:val =~ "\\S"')
 
   let [runmode; args] = split(self.config.runmode, ':')
   if !has_key(self, 'run_' . runmode)
@@ -215,19 +220,9 @@ endfunction
 " ----------------------------------------------------------------------------
 " Execute a single command.
 function! s:Runner.execute(cmd)  " {{{2
-  if a:cmd == ''
-    throw 'command build Failed'
-    return
-  endif
-
   if a:cmd =~ '^\s*:'
     " A vim command.
-    " XXX: Can't get a result if a:cmd contains :redir command.
-    let result = ''
-    redir => result
-    silent execute a:cmd
-    redir END
-    return result
+    return quickrun#execute(a:cmd)
   endif
 
   let cmd = a:cmd
@@ -249,17 +244,8 @@ function! s:Runner.execute(cmd)  " {{{2
   endif
 
   let cmd = s:iconv(cmd, &encoding, &termencoding)
-  let result = config.input == '' ? system(cmd)
-  \                               : system(cmd, config.input)
-
-  if get(config, 'output_encode', '') != ''
-    let enc = split(self.expand(config.output_encode), '[^[:alnum:]-_]')
-    if len(enc) == 2
-      let [from, to] = enc
-      let result = s:iconv(result, from, to)
-    endif
-  endif
-  return result
+  return config.input == '' ? system(cmd)
+  \                         : system(cmd, config.input)
 endfunction
 
 
@@ -281,11 +267,12 @@ function! s:Runner.run_async_remote(commands, ...)
   if !s:is_win && !executable('sh')
     throw 'Currently needs "sh" on other than MS Windows.  Sorry.'
   endif
-  let selfvim = s:is_win ? split($PATH, ';')[-1] . '\' . v:progname :
+  let selfvim = s:is_win ? split($PATH, ';')[-1] . '\vim.exe' :
   \             !empty($_) ? $_ : v:progname
   let key = has('reltime') ? reltimestr(reltime()) : string(localtime())
   let outfile = tempname()
-  let expr = printf('quickrun#_result(%s, %s)', string(key), string(outfile))
+  let self._temp_result = outfile
+  let expr = printf('quickrun#_result(%s)', string(key))
   let cmds = a:commands
   let callback = s:make_command(
   \        [selfvim, '--servername', v:servername, '--remote-expr', expr])
@@ -304,16 +291,18 @@ function! s:Runner.run_async_remote(commands, ...)
 
   " Execute by script file to unify the environment.
   let script = tempname()
-  let scriptfile = [
+  let scriptbody = [
   \   printf('(%s)%s >%s 2>&1', join(cmds, '&&'), in, s:shellescape(outfile)),
   \   callback,
   \ ]
   if s:is_win
     let script .= '.bat'
-    call insert(scriptfile, '@echo off')
+    call insert(scriptbody, '@echo off')
+    call map(scriptbody, 'v:val . "\r"')
   endif
+  call map(scriptbody, 's:iconv(v:val, &encoding, &termencoding)')
   let self._temp_script = script
-  call writefile(scriptfile, script)
+  call writefile(scriptbody, script)
 
   if a:0 && a:1 ==# 'vimproc' && s:available_vimproc
     if s:is_win
@@ -386,11 +375,11 @@ function! s:Runner.get_source_name()  " {{{2
   if exists('self.config.src')
     let src = self.config.src
     if type(src) == type('')
-      if has_key(self, '_temp')
-        let fname = self._temp
+      if has_key(self, '_temp_source')
+        let fname = self._temp_source
       else
         let fname = self.expand(self.config.tempfile)
-        let self._temp = fname
+        let self._temp_source = fname
         call writefile(split(src, "\n", 'b'), fname)
       endif
     elseif type(src) == type(0)
@@ -531,6 +520,14 @@ function! s:Runner.output(result)  " {{{2
   let append = config.append
 
   let result = a:result
+  if get(config, 'output_encode', '') != ''
+    let enc = split(self.expand(config.output_encode), '[^[:alnum:]-_]')
+    if len(enc) == 2
+      let [from, to] = enc
+      let result = s:iconv(result, from, to)
+    endif
+  endif
+
   if out == ''
     " Output to the exclusive window.
     call self.open_result_window()
@@ -545,8 +542,9 @@ function! s:Runner.output(result)  " {{{2
     if !config.into
       wincmd p
     endif
+    redraw
 
-  elseif out == '!'
+  elseif out == '!' || out == '_'
     " Do nothing.
 
   elseif out == ':'
@@ -569,6 +567,7 @@ function! s:Runner.output(result)  " {{{2
 
   else
     " Output to file.
+    let out = config.output
     let size = strlen(result)
     if append && filereadable(out)
       let result = join(readfile(out, 'b'), "\n") . result
@@ -589,7 +588,7 @@ function! s:Runner.open_result_window()  " {{{2
   endif
   if !bufexists(s:bufnr)
     execute self.expand(self.config.split) 'split'
-    edit `='[quickrun Output]'`
+    edit `='[quickrun output]'`
     let s:bufnr = bufnr('%')
     nnoremap <buffer> q <C-w>c
     setlocal bufhidden=hide buftype=nofile noswapfile nobuflisted
@@ -636,7 +635,6 @@ endfunction
 
 
 
-
 function! s:shellescape(str)
   if s:is_win
     let str = substitute(a:str, '[&|<>()^"%]', '^\0', 'g')
@@ -665,11 +663,12 @@ function! quickrun#run(args)  " {{{2
     let config = runner.config
 
     if config.running_mark != '' && config.output == ''
+      let mark = runner.expand(config.running_mark)
       call runner.open_result_window()
       if !config.append
         silent % delete _
       endif
-      silent $-1 put =config.running_mark
+      silent $-1 put =mark
       let b:quickrun_running_mark = 1
       normal! zt
       wincmd p
@@ -694,19 +693,22 @@ function! quickrun#complete(lead, cmd, pos)  " {{{2
   let head = line[-1]
   if 2 <= len(line) && line[-2] =~ '^-'
     let opt = line[-2][1:]
-    if opt ==# 'type'
-    elseif opt ==# 'append' || opt ==# 'shebang'
-      return ['0', '1']
-    elseif opt ==# 'mode'
-      return ['n', 'v', 'o']
-    else
-      return []
-    end
+    if opt !=# 'type'
+      let list = []
+      if opt ==# 'append' || opt ==# 'shebang' || opt ==# 'into'
+        let list = ['0', '1']
+      elseif opt ==# 'mode'
+        let list = ['n', 'v', 'o']
+      elseif opt ==# 'runmode'
+        let list = ['simple', 'async:remote', 'async:remote:vimproc']
+      end
+      return filter(list, 'v:val =~ "^".a:lead')
+    endif
   elseif head =~ '^-'
     let options = map(['type', 'src', 'input', 'output', 'append', 'command',
-      \ 'exec', 'args', 'tempfile', 'shebang', 'eval', 'mode', 'split',
-      \ 'output_encode', 'shellcmd', 'running_mark', 'eval_template'],
-      \ '"-".v:val')
+      \ 'exec', 'args', 'tempfile', 'shebang', 'eval', 'mode', 'runmode',
+      \ 'split', 'into', 'output_encode', 'shellcmd', 'running_mark',
+      \ 'eval_template'], '"-".v:val')
     return filter(options, 'v:val =~ "^".head')
   end
   let types = keys(extend(exists('g:quickrun_config') ?
@@ -716,13 +718,13 @@ endfunction
 
 
 
-function! quickrun#_result(key, resfile)
-  if !has_key(s:runners, a:key) || !filereadable(a:resfile)
+function! quickrun#_result(key)
+  if !has_key(s:runners, a:key)
     return ''
   endif
-  let result = join(readfile(a:resfile), "\n")
-  call delete(a:resfile)
   let runner = s:runners[a:key]
+  let resfile = runner._temp_result
+  let result = filereadable(resfile) ? join(readfile(resfile), "\n") : ''
   call remove(s:runners, a:key)
   call runner.sweep()
   call runner.output(result)
@@ -733,10 +735,14 @@ endfunction
 
 " Execute commands by expr.  This is used by remote_expr()
 function! quickrun#execute(...)
+  " XXX: Can't get a result if a:cmd contains :redir command.
+  let result = ''
+  redir => result
   for cmd in a:000
-    execute cmd
+    silent execute cmd
   endfor
-  return ''
+  redir END
+  return result
 endfunction
 
 
