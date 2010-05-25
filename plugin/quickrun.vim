@@ -119,6 +119,9 @@ function! s:init()
         \   'exec': ['%c -f markdown -t html -o %s:p:r.html %s', 'open %s:p:r.html', 'sleep 1', 'rm %s:p:r.html'],
         \   'tempfile': '{tempname()}.md'
         \ },
+        \ 'mdv': {
+        \   'command': 'mdv2html.rb',
+        \ },
         \ 'dosbatch': {
         \   'command': '',
         \   'exec': 'call %s %a',
