@@ -63,6 +63,9 @@ function! s:init()
         \     'exec': ['%c %s -o %s:p:r', '%s:p:r %a', 'rm -f %s:p:r'],
         \     'tempfile': '{tempname()}.c',
         \   } : {},
+        \ 'coffee': {
+        \   'command': 'coffee',
+        \ },
         \ 'cpp':
         \   s:is_win() && executable('cl') ? {
         \     'command': 'cl',
@@ -173,7 +176,7 @@ command! -nargs=* -range=% -complete=customlist,quickrun#complete QuickRun
 
 
 command! -nargs=* -range=% QuickRunIt
-\ call s:quickrun('-start <line1> -end <line2> ' . (exists('b:quickrun_it') ? b:quickrun_it : '') . ' -mode <q-args>')
+\ call quickrun#run('-start <line1> -end <line2> ' . (exists('b:quickrun_it') ? b:quickrun_it : '') . ' -mode <q-args>')
 
 
 

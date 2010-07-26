@@ -661,6 +661,7 @@ function! quickrun#run(args)  " {{{2
 
     let runner = s:Runner.new(a:args)
     let config = runner.config
+    let b:quickrun_it = config.type
 
     if config.running_mark != '' && config.output == ''
       let mark = runner.expand(config.running_mark)
