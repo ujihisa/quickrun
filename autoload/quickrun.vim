@@ -992,7 +992,7 @@ function! quickrun#_result(key, ...)  " {{{2
     let result = a:1
   else
     let resfile = runner._temp_result
-    let result = filereadable(resfile) ? join(readfile(resfile), "\n") : ''
+    let result = filereadable(resfile) ? join(readfile(resfile, 'b'), "\n") : ''
   endif
   call remove(s:runners, a:key)
   call runner.sweep()
