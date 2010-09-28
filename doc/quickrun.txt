@@ -310,6 +310,7 @@ Symbol			Result ~
 %s		Source
 %S		Source (not escaped)
 %a		Script's arguments
+%l		Current line number
 
 You can use |filename-modifiers| for the symbols to specify file.
 >
