@@ -575,7 +575,6 @@ function! s:Runner.build_command(tmpl)  " {{{2
   \  ['s', src], ['S', src],
   \  ['a', 'config.args'],
   \  ['\%', string('%')],
-  \  ['l', 'line(".")'],
   \]
   let file = ['s', 'S']
   let cmd = a:tmpl
